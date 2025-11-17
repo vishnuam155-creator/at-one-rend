@@ -1,0 +1,188 @@
+{% extends "resume/base_pdf.html" %}
+{% block extra_css %}
+:root {
+  --ink:#111;
+  --muted:#6b6b6b;
+  --rule:#e6e6e6;
+}
+
+.wrap { }
+.header {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-bottom:1px solid var(--rule);
+  padding-bottom:10px;
+  margin-bottom:12px;
+  gap:13px;
+}
+
+.photo {
+  width:86px;
+  height:86px;
+  object-fit:cover;
+  border-radius:10px;
+  border:1px solid var(--rule);
+  flex-shrink:0;
+}
+
+.header-content {
+  text-align:center;
+}
+
+.name {
+  font:800 26px/1.05 "Inter";
+  color:var(--ink);
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  text-align:center;
+}
+
+.meta {
+  font:12px/1.45 "Inter";
+  color:var(--muted);
+  text-align:center;
+  margin-top:6px;
+}
+
+.row {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+  justify-content:center;
+}
+.row > span { white-space:nowrap; }
+
+.section{ margin-top:14px; }
+.h{ font:800 12px/1 "Inter"; letter-spacing:.08em; color:#000;
+    border-bottom:4px solid var(--rule); padding-bottom:6px; }
+.block{ margin-top:10px; }
+.title{ font:700 12.5px/1.25 "Inter"; color:var(--ink); }
+.subtle{ font:12px/1.45 "Inter"; color:var(--muted); margin-top:1px; }
+.p{ font:12px/1.6 "Inter"; color:var(--ink); margin-top:6px; }
+
+.badges{ margin-top:6px; }
+.badge{ display:inline-block; font:600 10px/1 "Inter"; border:1px solid var(--rule);
+        border-radius:999px; padding:5px 8px; margin:4px 6px 0 0; }
+
+ul, ol { margin:6px 0 0 18px; padding:0; }
+li { margin:2px 0; }
+a { text-decoration: underline; color:#000; }
+{% endblock %}
+
+{% block body %}
+<div class="wrap">
+
+  <!-- Header -->
+  <div class="header">
+    {% if photo %}
+      <img class="photo_modern" src="{{ photo }}" alt="photo">
+    {% endif %}
+
+    <div class="header-content">
+      <div class="name">{{ contacts.firstName }} {{ contacts.lastName }}</div>
+
+      <div class="meta">
+        <div class="row">
+          <span>{{ contacts.email }}</span>
+          {% if contacts.phone %}<span>• {{ contacts.phone }}</span>{% endif %}
+          {% if contacts.location %}<span>• {{ contacts.location }}</span>{% endif %}
+        </div>
+        {% if contacts.website or contacts.linkedin or contacts.github %}
+          <div class="row" style="margin-top:2px">
+            {% if contacts.website %}<span>{{ contacts.website }}</span>{% endif %}
+            {% if contacts.linkedin %}{% if contacts.website %}<span>•</span>{% endif %}<span>{{ contacts.linkedin }}</span>{% endif %}
+            {% if contacts.github %}{% if contacts.website or contacts.linkedin %}<span>•</span>{% endif %}<span>{{ contacts.github }}</span>{% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% if summary_html %}
+    <div class="section">
+      <div class="h">ABOUT ME</div>
+      <div class="p">{{ summary_html|safe }}</div>
+    </div>
+  {% endif %}
+
+  {% if experience %}
+    <div class="section">
+      <div class="h">WORK EXPERIENCE</div>
+      {% for e in experience %}
+        <div class="block">
+          <div class="title">{{ e.jobTitle }} — {{ e.company }}</div>
+          <div class="subtle">
+            {% if e.location %}{{ e.location }} • {% endif %}
+            {{ e.startDate }}{% if e.isCurrentJob %} – Present{% elif e.endDate %} – {{ e.endDate }}{% endif %}
+          </div>
+          {% if e.description_html %}<div class="p">{{ e.description_html|safe }}</div>{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if education %}
+    <div class="section">
+      <div class="h">EDUCATION</div>
+      {% for ed in education %}
+        <div class="block">
+          <div class="title">
+            {{ ed.degree }}{% if ed.fieldOfStudy %} in {{ ed.fieldOfStudy }}{% endif %} — {{ ed.institution }}
+          </div>
+          <div class="subtle">
+            {{ ed.startDate }}{% if ed.isCurrentlyStudying %} – Present{% else %} – {{ ed.endDate }}{% endif %}
+            {% if ed.gpa %} • GPA: {{ ed.gpa }}{% endif %}
+          </div>
+          {% if ed.description_html %}<div class="p">{{ ed.description_html|safe }}</div>{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if projects %}
+    <div class="section">
+      <div class="h">PROJECTS</div>
+      {% for p in projects %}
+        <div class="block">
+          <div class="title">{{ p.name }}</div>
+          {% if p.description_html %}<div class="p">{{ p.description_html|safe }}</div>{% endif %}
+          {% if p.technologies %}<div class="subtle">Tech: {{ p.technologies|join:", " }}</div>{% endif %}
+          {% if p.url or p.githubUrl %}
+            <div class="subtle" style="margin-top:2px">
+              {% if p.url %}<a href="{{ p.url }}">{{ p.url }}</a>{% endif %}
+              {% if p.githubUrl %}{% if p.url %} • {% endif %}<a href="{{ p.githubUrl }}">{{ p.githubUrl }}</a>{% endif %}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if certificates %}
+    <div class="section">
+      <div class="h">CERTIFICATIONS</div>
+      {% for c in certificates %}
+        <div class="block">
+          <div class="title">{{ c.name }}</div>
+          <div class="subtle">
+            {{ c.issuer }}{% if c.issueDate %} • {{ c.issueDate }}{% endif %}{% if c.expirationDate %} – {{ c.expirationDate }}{% endif %}
+          </div>
+          {% if c.credentialId %}<div class="subtle">ID: {{ c.credentialId }}</div>{% endif %}
+          {% if c.url %}<div class="subtle"><a href="{{ c.url }}">{{ c.url }}</a></div>{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if skills %}
+    <div class="section">
+      <div class="h">SKILLS</div>
+      <div class="badges">
+        {% for s in skills %}<span class="badge">{{ s }}</span>{% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

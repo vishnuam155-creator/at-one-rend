@@ -1,0 +1,158 @@
+{% extends "resume/base_pdf.html" %}
+{% block extra_css %}
+:root { --accent:#0b5fff; --muted:#6b7280; --rule:#e5e7eb; }
+body { font-family:"Inter"; }
+.hdr { 
+  display:flex; 
+  justify-content:center; 
+  align-items:center; 
+  margin-bottom:10px; 
+  text-align:center;
+  position:relative;
+}
+.name { font:700 25pt/1.1 "Inter"; }
+.meta { font:12px/1.5 "Inter"; color:var(--muted); }
+.sec { margin-top:14px; }
+.h { font:700 13px/1 "Inter"; letter-spacing:.05em; border-bottom:1px solid var(--rule); padding-bottom:6px; }
+.badge { display:inline-block; font:600 10px/1 "Inter"; border:1px solid var(--rule); border-radius:999px; padding:5px 8px; margin:4px 4px 0 0; }
+.photo { 
+  width:90px; 
+  height:90px; 
+  object-fit:cover; 
+  border-radius:12px; 
+  border:2px solid var(--rule); 
+}
+.hdr.with-photo { justify-content:space-between; text-align:left; }
+.left { flex:1; }
+.right { display:flex; flex-direction:column; align-items:flex-end; }
+{% endblock %}
+
+{% block body %}
+  <div class="hdr {% if photo %}with-photo{% endif %}">
+    {% if photo %}
+      <div class="left">
+        <div class="name">{{ contacts.firstName }} {{ contacts.lastName }}</div>
+    <div class="meta"> {{ contacts.location }} {% if contacts.website %} • <a href="{{ contacts.website }}" class="no-link">Website</a> {% endif %} </div>        
+    <div class="meta">
+        {{ contacts.email }} • {{ contacts.phone }}
+        {% if contacts.linkedin %}
+        • <a href="{{ contacts.linkedin }}" class="no-link">LinkedIn</a>
+        {% endif %}
+        {% if contacts.github %}
+        • <a href="{{ contacts.github }}" class="no-link">GitHub</a>
+        {% endif %}
+    </div>
+      </div>
+      <div class="right">
+        <img class="photo_modern" src="{{ photo }}" alt="photo">
+      </div>
+    {% else %}
+<div>
+  <div class="name">{{ contacts.firstName }} {{ contacts.lastName }}</div>
+
+  <div class="meta">
+    {{ contacts.location }}
+    {% if contacts.website %}
+      • <a href="{{ contacts.website }}" class="no-link">Website</a>
+    {% endif %}
+  </div>
+
+  <div class="meta">
+    {{ contacts.email }} • {{ contacts.phone }}
+    {% if contacts.linkedin %}
+      • <a href="{{ contacts.linkedin }}" class="no-link">LinkedIn</a>
+    {% endif %}
+    {% if contacts.github %}
+      • <a href="{{ contacts.github }}" class="no-link">GitHub</a>
+    {% endif %}
+  </div>
+</div>
+
+    {% endif %}
+    </div>
+
+  {% if summary_html %}
+    <div class="sec">
+      <div class="h">PROFESSIONAL SUMMARY</div>
+      <div class="p" style="margin-top:6px">{{ summary_html|safe }}</div>
+    </div>
+  {% endif %}
+
+  {% if experience %}
+    <div class="sec">
+      <div class="h">WORK EXPERIENCE</div>
+      {% for e in experience %}
+        <div style="margin-top:8px">
+          <div style="font-weight:600">{{ e.jobTitle }} — {{ e.company }}</div>
+          <div class="meta">
+            {% if e.location %}{{ e.location }} • {% endif %}
+            {{ e.startDate }}{% if e.isCurrentJob %} – Present{% elif e.endDate %} – {{ e.endDate }}{% endif %}
+          </div>
+          {% if e.description_html %}
+            <div class="p" style="margin-top:4px">{{ e.description_html|safe }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if education %}
+    <div class="sec">
+      <div class="h">EDUCATION</div>
+      {% for ed in education %}
+        <div style="margin-top:8px">
+          <div style="font-weight:600">{{ ed.degree }} in {{ ed.fieldOfStudy }} — {{ ed.institution }}</div>
+          <div class="meta">
+            {{ ed.startDate }}{% if ed.isCurrentlyStudying %} – Present{% else %} – {{ ed.endDate }}{% endif %}
+            {% if ed.gpa %} • GPA: {{ ed.gpa }}{% endif %}
+          </div>
+          {% if ed.description_html %}
+            <div class="p" style="margin-top:4px">{{ ed.description_html|safe }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if projects %}
+    <div class="sec">
+      <div class="h">PROJECTS</div>
+      {% for p in projects %}
+        <div style="margin-top:8px">
+          <div style="font-weight:600">{{ p.name }}</div>
+          {% if p.description_html %}<div class="p">{{ p.description_html|safe }}</div>{% endif %}
+          {% if p.technologies %}<div class="meta">Tech: {{ p.technologies|join:", " }}</div>{% endif %}
+          {% if p.url or p.githubUrl %}
+            <div class="meta">
+              {% if p.url %}<a href="{{ p.url }}">demo-url</a>{% endif %} <!--{{ p.url }}-->
+              {% if p.githubUrl %}{% if p.url %} • {% endif %}<a href="{{ p.githubUrl }}">github-url</a>{% endif %}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if certificates %}
+    <div class="sec">
+      <div class="h">CERTIFICATIONS</div>
+      {% for c in certificates %}
+        <div style="margin-top:8px">
+          <div style="font-weight:600">{{ c.name }}</div>
+          <div class="meta">{{ c.issuer }} • {{ c.issueDate }}{% if c.expirationDate %} – {{ c.expirationDate }}{% endif %}</div>
+          {% if c.credentialId %}<div class="meta">ID: {{ c.credentialId }}</div>{% endif %}
+          {% if c.url %}<div class="meta"><a href="{{ c.url }}">{{ c.url }}</a></div>{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if skills %}
+    <div class="sec">
+      <div class="h">SKILLS</div>
+      <div style="margin-top:6px">
+        {% for s in skills %}<span class="badge">{{ s }}</span>{% endfor %}
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

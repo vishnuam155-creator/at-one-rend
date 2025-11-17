@@ -1,0 +1,14 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ full_name|default:"Resume" }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{% static 'css/pdf_base.css' %}">
+  <style>{% block extra_css %}{% endblock %}</style>
+</head>
+<body class="page">
+  {% block body %}{% endblock %}
+</body>
+</html>

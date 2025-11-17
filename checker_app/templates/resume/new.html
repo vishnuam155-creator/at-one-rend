@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ contacts.firstName }} {{ contacts.lastName }} - Resume</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+<body>
+  <div class="resume-container">
+    <!-- LEFT COLUMN -->
+    <div class="left-column">
+      <div class="profile-img">
+        {% if photo %}
+          <img src="{{ photo }}" alt="Profile Photo">
+        {% else %}
+          <img src="{% static 'resume/default-profile.jpg' %}" alt="Profile Photo">
+        {% endif %}
+      </div>
+
+      <h1 class="name">{{ contacts.firstName }} <span>{{ contacts.lastName }}</span></h1>
+      <p class="title">{{ contacts.title|default:"" }}</p>
+
+      <section class="contact">
+        <h2>Contact</h2>
+        <ul>
+          {% if contacts.phone %}<li><i class="fa fa-phone"></i> {{ contacts.phone }}</li>{% endif %}
+          {% if contacts.email %}<li><i class="fa fa-envelope"></i> {{ contacts.email }}</li>{% endif %}
+          {% if contacts.location %}<li><i class="fa fa-map-marker"></i> {{ contacts.location }}</li>{% endif %}
+          {% if contacts.website %}<li><i class="fa fa-globe"></i> {{ contacts.website }}</li>{% endif %}
+          {% if contacts.linkedin %}<li><i class="fa fa-linkedin"></i> {{ contacts.linkedin }}</li>{% endif %}
+          {% if contacts.github %}<li><i class="fa fa-github"></i> {{ contacts.github }}</li>{% endif %}
+        </ul>
+      </section>
+
+      {% if summary_html %}
+      <section class="about">
+        <h2>About Me</h2>
+        <p>{{ summary_html|safe }}</p>
+      </section>
+      {% endif %}
+
+      {% if skills %}
+      <section class="skills">
+        <h2>Skills</h2>
+        <ul>
+          {% for s in skills %}
+            <li>{{ s }}</li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% endif %}
+
+      <!-- {% if languages %}
+      <section class="language">
+        <h2>Language</h2>
+        <ul>
+          {% for lang in languages %}
+            <li>{{ lang }}</li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% endif %} -->
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="right-column">
+      {% if education %}
+      <section class="education">
+        <h2>Education</h2>
+        {% for ed in education %}
+        <div class="item">
+          <div class="header">
+            <h3>{{ ed.degree }}{% if ed.fieldOfStudy %} in {{ ed.fieldOfStudy }}{% endif %}</h3>
+            <span>{{ ed.startDate }}{% if ed.isCurrentlyStudying %} – Present{% else %} – {{ ed.endDate }}{% endif %}</span>
+          </div>
+          <p><strong>{{ ed.institution }}</strong></p>
+          {% if ed.description_html %}<p>{{ ed.description_html|safe }}</p>{% endif %}
+        </div>
+        {% endfor %}
+      </section>
+      {% endif %}
+
+      {% if experience %}
+      <section class="experience">
+        <h2>Experience</h2>
+        {% for e in experience %}
+        <div class="item">
+          <div class="header">
+            <h3>{{ e.jobTitle }}</h3>
+            <span>{{ e.startDate }}{% if e.isCurrentJob %} – Present{% elif e.endDate %} – {{ e.endDate }}{% endif %}</span>
+          </div>
+          <p><em>{{ e.company }}{% if e.location %} | {{ e.location }}{% endif %}</em></p>
+          {% if e.description_html %}<p>{{ e.description_html|safe }}</p>{% endif %}
+        </div>
+        {% endfor %}
+      </section>
+      {% endif %}
+
+      {% if projects %}
+      <section class="projects">
+        <h2>Projects</h2>
+        {% for p in projects %}
+        <div class="item">
+          <div class="header">
+            <h3>{{ p.name }}</h3>
+          </div>
+          {% if p.description_html %}<p>{{ p.description_html|safe }}</p>{% endif %}
+          {% if p.technologies %}<p><strong>Tech:</strong> {{ p.technologies|join:", " }}</p>{% endif %}
+          {% if p.url or p.githubUrl %}
+            <p>
+              {% if p.url %}<a href="{{ p.url }}">Live</a>{% endif %}
+              {% if p.githubUrl %}{% if p.url %} • {% endif %}<a href="{{ p.githubUrl }}">GitHub</a>{% endif %}
+            </p>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </section>
+      {% endif %}
+
+      {% if certificates %}
+      <section class="certifications">
+        <h2>Certifications</h2>
+        {% for c in certificates %}
+        <div class="item">
+          <div class="header">
+            <h3>{{ c.name }}</h3>
+            <span>{{ c.issueDate }}{% if c.expirationDate %} – {{ c.expirationDate }}{% endif %}</span>
+          </div>
+          <p><strong>{{ c.issuer }}</strong></p>
+          {% if c.credentialId %}<p>ID: {{ c.credentialId }}</p>{% endif %}
+          {% if c.url %}<p><a href="{{ c.url }}">{{ c.url }}</a></p>{% endif %}
+        </div>
+        {% endfor %}
+      </section>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>
+{% endblock %}

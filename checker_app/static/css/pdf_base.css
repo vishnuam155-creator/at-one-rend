@@ -1,0 +1,43 @@
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/Inter-Regular.ttf") format("truetype");
+  font-weight: 400; font-style: normal;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/Inter-Bold.ttf") format("truetype");
+  font-weight: 700; font-style: normal;
+}
+
+* { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+html, body { margin:0; padding:0; }
+.page { font:12px/1.6 "Inter"; color:#111827; padding:22px; }
+@page { size: A4; margin: 10mm 14mm; }
+
+/* Rich text defaults */
+ul, ol { margin: 6px 0 0 18px; padding: 0; }
+li { margin: 2px 0; }
+a { text-decoration: underline; color: #111827; }
+.p { font: 12px/1.6 "Inter"; color: #111827; }
+
+
+a.no-link {
+  color: var(--muted);
+  text-decoration: none;
+}
+a.no-link:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.photo_modern{
+  width:110px;
+  height:110px;
+  object-fit:contain;            /* keeps full image without major crop */
+  border-radius:10px;            /* slightly rounded corners */
+  border:2px solid var(--rule);
+  padding:4px;                   /* adds a small inner margin (visible frame) */
+  background:white;              /* ensures clean edge */
+  margin-left:12px;
+  margin-top: 2px;
+}
