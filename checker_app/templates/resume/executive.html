@@ -1,0 +1,258 @@
+{% extends "resume/base_pdf.html" %}
+{% load static %}
+
+{% block extra_css %}
+:root {
+  --primary: #1a1a2e;
+  --accent: #c5a572;
+  --muted: #555555;
+  --rule: #d4af37;
+  --ink: #1a1a1a;
+  --light-bg: #f8f8f8;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.header {
+  text-align: center;
+  padding: 20px 0 15px;
+  border-bottom: 3px solid var(--rule);
+  margin-bottom: 20px;
+}
+
+.name {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 1px;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+
+.contact-bar {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+.contact-bar a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.photo-wrapper {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.photo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+  object-fit: cover;
+}
+
+.section {
+  margin-bottom: 18px;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 4px;
+  margin-bottom: 12px;
+}
+
+.summary {
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--ink);
+  text-align: justify;
+}
+
+.entry {
+  margin-bottom: 14px;
+  page-break-inside: avoid;
+}
+
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.entry-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.entry-org {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  font-style: italic;
+}
+
+.entry-date {
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.entry-location {
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.entry-desc {
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.entry-desc ul {
+  margin: 4px 0;
+  padding-left: 18px;
+}
+
+.entry-desc li {
+  margin-bottom: 3px;
+}
+
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-tag {
+  background: var(--light-bg);
+  border: 1px solid var(--accent);
+  color: var(--primary);
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+{% endblock %}
+
+{% block body %}
+<div class="header">
+  {% if photo %}
+  <div class="photo-wrapper">
+    <img src="{{ photo }}" alt="{{ full_name }}" class="photo">
+  </div>
+  {% endif %}
+  <h1 class="name">{{ full_name }}</h1>
+  <div class="contact-bar">
+    {% if contacts.email %}<span>{{ contacts.email }}</span>{% endif %}
+    {% if contacts.phone %}<span>{{ contacts.phone }}</span>{% endif %}
+    {% if contacts.location %}<span>{{ contacts.location }}</span>{% endif %}
+    {% if contacts.website %}<a href="{{ contacts.website }}">{{ contacts.website }}</a>{% endif %}
+    {% if contacts.linkedin %}<a href="{{ contacts.linkedin }}">LinkedIn</a>{% endif %}
+    {% if contacts.github %}<a href="{{ contacts.github }}">GitHub</a>{% endif %}
+  </div>
+</div>
+
+{% if summary_html %}
+<div class="section">
+  <h2 class="section-title">Executive Summary</h2>
+  <div class="summary">{{ summary_html|safe }}</div>
+</div>
+{% endif %}
+
+{% if experience %}
+<div class="section">
+  <h2 class="section-title">Professional Experience</h2>
+  {% for exp in experience %}
+  <div class="entry">
+    <div class="entry-header">
+      <div>
+        <div class="entry-title">{{ exp.position }}</div>
+        <div class="entry-org">{{ exp.company }}</div>
+      </div>
+      <div class="entry-date">{{ exp.startDate }} – {{ exp.endDate }}</div>
+    </div>
+    {% if exp.location %}<div class="entry-location">{{ exp.location }}</div>{% endif %}
+    {% if exp.description_html %}<div class="entry-desc">{{ exp.description_html|safe }}</div>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if education %}
+<div class="section">
+  <h2 class="section-title">Education</h2>
+  {% for edu in education %}
+  <div class="entry">
+    <div class="entry-header">
+      <div>
+        <div class="entry-title">{{ edu.degree }}</div>
+        <div class="entry-org">{{ edu.institution }}</div>
+      </div>
+      <div class="entry-date">{{ edu.startDate }} – {{ edu.endDate }}</div>
+    </div>
+    {% if edu.location %}<div class="entry-location">{{ edu.location }}</div>{% endif %}
+    {% if edu.description_html %}<div class="entry-desc">{{ edu.description_html|safe }}</div>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if projects %}
+<div class="section">
+  <h2 class="section-title">Key Projects</h2>
+  {% for proj in projects %}
+  <div class="entry">
+    <div class="entry-header">
+      <div class="entry-title">{{ proj.name }}</div>
+      <div class="entry-date">{{ proj.date }}</div>
+    </div>
+    {% if proj.description_html %}<div class="entry-desc">{{ proj.description_html|safe }}</div>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if certificates %}
+<div class="section">
+  <h2 class="section-title">Certifications</h2>
+  {% for cert in certificates %}
+  <div class="entry">
+    <div class="entry-header">
+      <div class="entry-title">{{ cert.name }}</div>
+      <div class="entry-date">{{ cert.date }}</div>
+    </div>
+    {% if cert.issuer %}<div class="entry-org">{{ cert.issuer }}</div>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if skills %}
+<div class="section">
+  <h2 class="section-title">Core Competencies</h2>
+  <div class="skills-grid">
+    {% for skill in skills %}
+    <span class="skill-tag">{{ skill }}</span>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

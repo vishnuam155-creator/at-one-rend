@@ -242,7 +242,12 @@ class ResumeDataSerializer(serializers.Serializer):
 
 
 class GeneratePayloadSerializer(serializers.Serializer):
-    template = serializers.ChoiceField(choices=["professional", "modern", "creative"])
+    template = serializers.ChoiceField(choices=[
+        "professional", "modern", "creative", "new",
+        "executive", "technical", "minimalist", "elegant",
+        "bold", "compact", "academic", "startup",
+        "classic", "colorful"
+    ])
     format = serializers.ChoiceField(choices=["with-photo", "without-photo"])
     data = ResumeDataSerializer()
 from rest_framework import serializers
